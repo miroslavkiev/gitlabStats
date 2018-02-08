@@ -1,5 +1,22 @@
 td {
-    width: 80px;
-    height: 20px;
+    width: 65px;
+    height: 15px;
     text-align: center;
+    border: 1px solid black; 
+
+}
+
+table {
+    border-collapse: collapse;
+    font-family:arial;
+    font-size: 11px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
 }

@@ -16,19 +16,23 @@ function generateUrls() {
     }
 }
 
-function fetchUserCommits(url, name) {
-    fetch(url)
-    .then(function(response,name) {
-        if (!response.ok) {
-            throw Error(response.statusText);
-        }
-        return [response.json(),name];
-    }).then(function(data,name) {
-        usersData.jsons.push(name);
-    }).catch(function(error) {
-        console.log(error);
-    });
-}
+// function fetchUserCommits(url) {
+//     fetch(url)
+//     .then(function(response) {
+//         if (!response.ok) {
+//             throw Error(response.statusText);
+//         }
+//         return response.json();
+//     }).then(function(data) {
+//         usersData.jsons.push(data);
+//     }).catch(function(error) {
+//         console.log(error);
+//     });
+// }
+
+
+
+
 
 function normalizeData() {
     for(let i = 0; i < usersData.jsons.length; i++){
@@ -78,6 +82,10 @@ function printTableStats() {
             for(let k = 0; k < usersData.names.length; k++){
                 if (k === 0){
                     let nodeTd = document.createElement("TD");
+                    if (checkForWeekends(usersData.uniqueDates[i])) {
+                        //nodeTd.setAttribute("bgcolor", "red");
+                        document.getElementById(`row${i}`).style.backgroundColor = "#f2c3dd";
+                    }
                     let textnode = document.createTextNode(usersData.uniqueDates[i]);
                     nodeTd.appendChild(textnode);
                     document.getElementById(`row${i}`).appendChild(nodeTd);
@@ -101,7 +109,14 @@ function printTableStats() {
     }
 }
 
-
+function checkForWeekends(date){
+    let dateToCheck = new Date(date);
+    let dayOfWeek = dateToCheck.getDay();
+    console.log(dayOfWeek);
+    if  ((dayOfWeek === 6) || (dayOfWeek === 0)){
+        return 1;
+    } 
+}
 
 function printStats (){
     for (let i = 0; i < usersData.names.length; i++){
@@ -121,11 +136,13 @@ function printStats (){
 
 function getUserStats() {
     generateUrls();
-    for(let i = 0; i < usersData.urls.length; i++) {
-        fetchUserCommits(usersData.urls[i], usersData.names[i]);
-    }
-    // setTimeout(() => {
-    //     normalizeData();
-    //     printTableStats();
-    // }, 1000);
+    let promises = usersData.urls.map(url => fetch(url).then(y => y.json()));
+    Promise.all(promises).then(results => {
+        usersData.jsons = results;
+    });
+    setTimeout(() => {
+        normalizeData();
+        printTableStats();
+        console.log();
+    }, 1000);
 }
