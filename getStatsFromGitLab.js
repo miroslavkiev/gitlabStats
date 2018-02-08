@@ -1,5 +1,7 @@
 let usersData = {
     names: ['vits', 'naba', 'ndm', 'anser', 'alymak', 'annko', 'rbod', 'voz', 'illia.khutornyi', 'vladz'],
+    vacations: [10,1,4,7,4,6,6,5,1,5],
+    absenseCoefficient: [],
     urls: [],
     jsons: [],
     uniqueDates: [],
@@ -13,6 +15,12 @@ if (localStorage.getItem("privateToken")){
 function submitPrivateToken(){
     localStorage.setItem("privateToken", privateTokenValue.value);
     location.reload();
+}
+
+function calcAbsenseMultiplier(){
+    for (let i=0; i < usersData.vacations.length;i++){
+        usersData.absenseCoefficient.push(1 + (usersData.vacations[i] / usersData.uniqueDates.length));
+    }   
 }
 
 function generateUrls() {
@@ -70,14 +78,14 @@ function printTableStats() {
             for(let l = 0; l < usersData.names.length; l++){
                 if (l === 0){
                     let nodeTd = document.createElement("TD");
-                    let textnode = document.createTextNode("Totals");
+                    let textnode = document.createTextNode("Weighted totals");
                     nodeTd.appendChild(textnode);
                     document.getElementById(`row${i}`).appendChild(nodeTd);
                     document.getElementById(`row${i}`).style.fontWeight = "bolder";
                 }
                 let nodeTd = document.createElement("TD");
-                let textnode = document.createTextNode(usersData.totals[l]);
-                nodeTd.style.backgroundColor = `rgba(0, 78, 0, ${calculateOpacityPercentage(usersData.totals[l])})`;
+                let textnode = document.createTextNode(Math.ceil(usersData.totals[l] * usersData.absenseCoefficient[l]));
+                nodeTd.style.backgroundColor = `rgba(0, 78, 0, ${calculateOpacityPercentage(usersData.totals[l] * usersData.absenseCoefficient[l])})`;
                 nodeTd.appendChild(textnode);
                 document.getElementById(`row${i}`).appendChild(nodeTd);
             }
@@ -130,6 +138,7 @@ function getUserStats() {
         usersData.jsons = results;
         normalizeData();
         calculateTotals();
+        calcAbsenseMultiplier();
         printTableStats();
     });
 }
