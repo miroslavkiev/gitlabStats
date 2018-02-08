@@ -97,7 +97,7 @@ function checkForWeekends(date){
 
 function getUserStats() {
     generateUrls();
-    let promises = usersData.urls.map(url => fetch(url).then(y => y.json()));
+    let promises = usersData.urls.map(url => fetch(url,{mode:'no-cors'}).then(y => y.json()));
     Promise.all(promises).then(results => {
         usersData.jsons = results;
     });
