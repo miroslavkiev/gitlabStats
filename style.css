@@ -8,13 +8,21 @@ td {
     height: 15px;
     text-align: center;
     border: 1px solid black; 
-
 }
 
 table {
     border-collapse: collapse;
     font-family:arial;
     font-size: 11px;
+}
+
+tr:first-child{
+    background-color: #031046;
+    color: #f2f2f2;
+}
+
+tr:last-child {
+    text-shadow: 0 0 3px #ffffff;
 }
 
 tr:nth-child(even) {

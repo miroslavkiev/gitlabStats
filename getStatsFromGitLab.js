@@ -2,7 +2,8 @@ let usersData = {
     names: ['vits', 'naba', 'ndm', 'anser', 'alymak', 'annko', 'rbod', 'voz', 'illia.khutornyi', 'vladz'],
     urls: [],
     jsons: [],
-    uniqueDates: []
+    uniqueDates: [],
+    totals: []
 };
 
 if (localStorage.getItem("privateToken")){
@@ -29,6 +30,27 @@ function normalizeData() {
     usersData.uniqueDates = uniqueArray.slice('');
 }
 
+function calculateTotals(){
+    for (let i = 0; i < usersData.jsons.length; i++){
+        let currentTotal = 0;
+        for (let j = 0; j < usersData.uniqueDates.length; j++){
+            if (usersData.jsons[i][usersData.uniqueDates[j]]){
+                currentTotal += parseInt(usersData.jsons[i][usersData.uniqueDates[j]]);
+            }
+        }
+        usersData.totals.push(currentTotal);
+    }
+}
+
+function calculateOpacityPercentage(currentTotal){
+    let maxTotalValue = Math.max.apply(Math, usersData.totals);
+    let minTotalValue = Math.min.apply(Math, usersData.totals);
+    let minMaxDiff = maxTotalValue - minTotalValue;
+    let currentTotalRelValue = currentTotal - minTotalValue;
+    let currentTotalWeight = currentTotalRelValue / minMaxDiff;
+    return currentTotalWeight;
+}
+
 function printTableStats() {
     for (let i = 0; i <= usersData.uniqueDates.length; i++){
         let nodeTr = document.createElement("TR"); 
@@ -51,15 +73,11 @@ function printTableStats() {
                     let textnode = document.createTextNode("Totals");
                     nodeTd.appendChild(textnode);
                     document.getElementById(`row${i}`).appendChild(nodeTd);
+                    document.getElementById(`row${i}`).style.fontWeight = "bolder";
                 }
                 let nodeTd = document.createElement("TD");
-                let currentTotal = 0;
-                for (let m = 0; m < usersData.uniqueDates.length;m++){
-                    if (usersData.jsons[l][usersData.uniqueDates[m]]){
-                        currentTotal += parseInt(usersData.jsons[l][usersData.uniqueDates[m]]);
-                    }
-                }
-                let textnode = document.createTextNode(currentTotal);
+                let textnode = document.createTextNode(usersData.totals[l]);
+                nodeTd.style.backgroundColor = `rgba(0, 78, 0, ${calculateOpacityPercentage(usersData.totals[l])})`;
                 nodeTd.appendChild(textnode);
                 document.getElementById(`row${i}`).appendChild(nodeTd);
             }
@@ -68,15 +86,18 @@ function printTableStats() {
             for(let k = 0; k < usersData.names.length; k++){
                 if (k === 0){
                     let nodeTd = document.createElement("TD");
-                    if (checkForWeekends(usersData.uniqueDates[i])) {
-                        document.getElementById(`row${i}`).style.backgroundColor = "#f2c3dd";
-                    }
                     let textnode = document.createTextNode(usersData.uniqueDates[i]);
                     nodeTd.appendChild(textnode);
                     document.getElementById(`row${i}`).appendChild(nodeTd);
                 }
                 if (usersData.jsons[k][usersData.uniqueDates[i]]) {
                     let nodeTd = document.createElement("TD");
+
+                    //Highlight activity on weekdays
+                    if (checkForWeekends(usersData.uniqueDates[i])) {
+                        nodeTd.style.backgroundColor = "#f2c3dd";
+                    }
+
                     let textnode = document.createTextNode(usersData.jsons[k][usersData.uniqueDates[i]]);
                     nodeTd.appendChild(textnode);
                     document.getElementById(`row${i}`).appendChild(nodeTd);
@@ -108,6 +129,7 @@ function getUserStats() {
     Promise.all(promises).then(results => {
         usersData.jsons = results;
         normalizeData();
+        calculateTotals();
         printTableStats();
     });
 }
