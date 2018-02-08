@@ -14,8 +14,6 @@ function submitPrivateToken(){
     location.reload();
 }
 
-//const privateToken = 'jhzSvdUm5dfyT7Yws-Ta';
-
 function generateUrls() {
     for(let i = 0; i < usersData.names.length; i++){
         usersData.urls[i] = `https://gitlab.ciklum.net/users/${usersData.names[i]}/calendar.json?private_token=${localStorage.getItem("privateToken")}&timestamp=fas2eewefesуeaes34`;
