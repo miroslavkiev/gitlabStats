@@ -1,5 +1,3 @@
-let tesf = [];
-
 let usersData = {
     names: ['vits', 'naba', 'ndm', 'anser', 'alymak', 'annko', 'rbod', 'voz', 'illia.khutornyi', 'vladz'],
     urls: [],
@@ -7,7 +5,6 @@ let usersData = {
     uniqueDates: []
 };
 
-// 'https://gitlab.ciklum.net/users/naba/calendar.json?private_token=';
 const privateToken = 'jhzSvdUm5dfyT7Yws-Ta';
 
 function generateUrls() {
@@ -15,24 +12,6 @@ function generateUrls() {
         usersData.urls[i] = `https://gitlab.ciklum.net/users/${usersData.names[i]}/calendar.json?private_token=${privateToken}&timestamp=fas2eewefesуeaes34`;
     }
 }
-
-// function fetchUserCommits(url) {
-//     fetch(url)
-//     .then(function(response) {
-//         if (!response.ok) {
-//             throw Error(response.statusText);
-//         }
-//         return response.json();
-//     }).then(function(data) {
-//         usersData.jsons.push(data);
-//     }).catch(function(error) {
-//         console.log(error);
-//     });
-// }
-
-
-
-
 
 function normalizeData() {
     for(let i = 0; i < usersData.jsons.length; i++){
@@ -83,7 +62,6 @@ function printTableStats() {
                 if (k === 0){
                     let nodeTd = document.createElement("TD");
                     if (checkForWeekends(usersData.uniqueDates[i])) {
-                        //nodeTd.setAttribute("bgcolor", "red");
                         document.getElementById(`row${i}`).style.backgroundColor = "#f2c3dd";
                     }
                     let textnode = document.createTextNode(usersData.uniqueDates[i]);
@@ -112,27 +90,10 @@ function printTableStats() {
 function checkForWeekends(date){
     let dateToCheck = new Date(date);
     let dayOfWeek = dateToCheck.getDay();
-    console.log(dayOfWeek);
     if  ((dayOfWeek === 6) || (dayOfWeek === 0)){
         return 1;
     } 
 }
-
-function printStats (){
-    for (let i = 0; i < usersData.names.length; i++){
-        console.log("Username: " + usersData.names[i] + "\n");
-        for(let j = 0; j < usersData.uniqueDates.length; j++){
-            if (usersData.jsons[i][usersData.uniqueDates[j]]) {
-                console.log(usersData.uniqueDates[j] + " - " +  usersData.jsons[i][usersData.uniqueDates[j]] + "\n");
-            }
-            else {
-                console.log(usersData.uniqueDates[j] + " - 0\n");
-            }
-        }
-    }
-}
-
-
 
 function getUserStats() {
     generateUrls();
@@ -143,6 +104,5 @@ function getUserStats() {
     setTimeout(() => {
         normalizeData();
         printTableStats();
-        console.log();
     }, 1000);
 }
