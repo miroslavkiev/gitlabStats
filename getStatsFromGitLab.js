@@ -5,11 +5,20 @@ let usersData = {
     uniqueDates: []
 };
 
-const privateToken = 'jhzSvdUm5dfyT7Yws-Ta';
+if (localStorage.getItem("privateToken")){
+    privateTokenValue.value = localStorage.getItem("privateToken");
+}
+
+function submitPrivateToken(){
+    localStorage.setItem("privateToken", privateTokenValue.value);
+    location.reload();
+}
+
+//const privateToken = 'jhzSvdUm5dfyT7Yws-Ta';
 
 function generateUrls() {
     for(let i = 0; i < usersData.names.length; i++){
-        usersData.urls[i] = `https://gitlab.ciklum.net/users/${usersData.names[i]}/calendar.json?private_token=${privateToken}&timestamp=fas2eewefesуeaes34`;
+        usersData.urls[i] = `https://gitlab.ciklum.net/users/${usersData.names[i]}/calendar.json?private_token=${localStorage.getItem("privateToken")}&timestamp=fas2eewefesуeaes34`;
     }
 }
 
@@ -100,9 +109,7 @@ function getUserStats() {
     let promises = usersData.urls.map(url => fetch(url).then(y => y.json()));
     Promise.all(promises).then(results => {
         usersData.jsons = results;
-    });
-    setTimeout(() => {
         normalizeData();
         printTableStats();
-    }, 1000);
+    });
 }

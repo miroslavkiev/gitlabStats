@@ -8,8 +8,10 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body onload="getUserStats()">
-    <p>Please install <a href="https://chrome.google.com/webstore/detail/cors-toggle/jioikioepegflmdnbocfhgmpmopmjkim?utm_source=chrome-app-launcher-info-dialog">this NO CORS extension</a> first. Then push it to be of green color. Then reload the page.</p>
-        <table id="tableContainer"></table>
+    <p>1. Please install <a href="https://chrome.google.com/webstore/detail/cors-toggle/jioikioepegflmdnbocfhgmpmopmjkim?utm_source=chrome-app-launcher-info-dialog">this NO CORS extension</a> first. Then push it to be of green color. Then reload the page.</p>
+    <div id="privateTokenStatus">2. Please enter your private token from GitLab: <input id="privateTokenValue" type="text" width="100px"></input>
+    <button id="privateTokenSubmit" onclick="submitPrivateToken()">Send</button></div><br>
+    <table id="tableContainer"></table>
         <script src="getStatsFromGitLab.js"></script>    
 </body>
 </html>
