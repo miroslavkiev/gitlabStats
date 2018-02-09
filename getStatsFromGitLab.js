@@ -121,6 +121,7 @@ function printTableStats() {
                     let nodeTd = document.createElement("TD");
                     //Highlight activity on weekdays
                     if (checkForWeekends(usersData.uniqueDates[i])) {
+                        document.getElementById(`row${i}`).setAttribute("class","hatching");
                         nodeTd.style.backgroundColor = "#90EE90";
                     }
                     if (checkIfVacation(usersData.names[k], usersData.uniqueDates[i])) {
