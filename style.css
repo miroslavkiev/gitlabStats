@@ -41,7 +41,7 @@ div {
 }
 
 .vacation {
-    width: 200px;
+    width: 170px;
     height: 20px;
     text-align: center;
     border: 1px solid black;
@@ -53,7 +53,7 @@ div {
 }
 
 .idle {
-    width: 200px;
+    width: 170px;
     height: 20px;
     text-align: center;
     border: 1px solid black;
@@ -65,7 +65,7 @@ div {
 }
 
 .weekend {
-    width: 200px;
+    width: 170px;
     height: 20px;
     text-align: center;
     border: 1px solid black;
