@@ -1,6 +1,19 @@
 let usersData = {
-    names: ['vits', 'naba', 'ndm', 'anser', 'alymak', 'annko', 'rbod', 'voz', 'illia.khutornyi', 'vladz'],
-    vacations: [10, 1, 4, 7, 4, 6, 6, 5, 1, 5],
+    names: ['vits', 'naba', 'ndm', 'anser', 'alymak', 'annko', 'rbod', 'voz', 'illia.khutornyi',
+    //'vladz'
+    ],
+    vacationsDates: {
+        alymak: ["2017-12-29", "2018-01-02", "2018-01-03", "2018-01-29"],
+        annko: ["2017-12-29", "2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-25"],
+        rbod: ["2017-12-29", "2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-06", "2018-01-07", "2018-01-08", "2018-01-09"],
+        anser: ["2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-22", "2018-01-23", "2018-01-24"],
+        ndm: ["2018-01-02", "2018-01-03", "2018-01-09", "2018-01-10"],
+        vits: ["2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-06", "2018-01-07", "2018-01-08", "2018-01-09", "2018-01-10", "2018-01-11", "2018-01-12", "2018-01-22", "2018-01-23"],
+        vladz: ["2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-25"],
+        voz: ["2018-01-05", "2018-01-06", "2018-01-07", "2018-01-08", "2018-01-09", "2018-01-19", "2018-01-31"],
+        naba: ["2018-01-17"],
+        'illia.khutornyi': ["2018-02-08", "2018-02-09"]
+    },
     absenseCoefficient: [],
     urls: [],
     jsons: [],
@@ -17,9 +30,16 @@ function submitPrivateToken() {
     location.reload();
 }
 
+function checkIfVacation(user, date) {
+    for (let i = 0; i < usersData.vacationsDates[user].length; i++) {
+        if (usersData.vacationsDates[user][i] === date) return 1;
+    }
+}
+
 function calcAbsenseMultiplier() {
-    for (let i = 0; i < usersData.vacations.length; i++) {
-        usersData.absenseCoefficient.push(1 + (usersData.vacations[i] / usersData.uniqueDates.length));
+    let usersInVacations = Object.keys(usersData.vacationsDates);
+    for (let i = 0; i < usersInVacations.length; i++) {
+        usersData.absenseCoefficient.push(1 + (usersData.vacationsDates[usersInVacations[i]].length / usersData.uniqueDates.length));
     }
 }
 
@@ -99,12 +119,13 @@ function printTableStats() {
                 }
                 if (usersData.jsons[k][usersData.uniqueDates[i]]) {
                     let nodeTd = document.createElement("TD");
-
                     //Highlight activity on weekdays
                     if (checkForWeekends(usersData.uniqueDates[i])) {
-                        nodeTd.style.backgroundColor = "#f2c3dd";
+                        nodeTd.style.backgroundColor = "#90EE90";
                     }
-
+                    if (checkIfVacation(usersData.names[k], usersData.uniqueDates[i])) {
+                        nodeTd.style.backgroundColor = "#66CCCC";
+                    }
                     let textnode = document.createTextNode(usersData.jsons[k][usersData.uniqueDates[i]]);
                     nodeTd.appendChild(textnode);
                     document.getElementById(`row${i}`).appendChild(nodeTd);
@@ -112,6 +133,14 @@ function printTableStats() {
                 else {
                     let nodeTd = document.createElement("TD");
                     let textnode = document.createTextNode("0");
+                    if (checkIfVacation(usersData.names[k], usersData.uniqueDates[i])) {
+                        nodeTd.style.backgroundColor = "#66CCCC";
+                    }
+                    else {
+                        if (!checkIfVacation(usersData.names[k], usersData.uniqueDates[i]) && !checkForWeekends(usersData.uniqueDates[i])){
+                            nodeTd.style.backgroundColor = "#FF0000";
+                        }
+                    }
                     nodeTd.appendChild(textnode);
                     document.getElementById(`row${i}`).appendChild(nodeTd);
                 }
