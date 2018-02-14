@@ -4,7 +4,7 @@ body {
 }
 
 td {
-    width: 65px;
+    width: 75px;
     height: 15px;
     text-align: center;
     border: 1px solid lightgray;
@@ -19,6 +19,8 @@ table {
 tr:first-child{
     background-color: #031046;
     color: #f2f2f2;
+    height: 25px;
+    font-weight: bold;
 }
 
 tr:last-child {
@@ -41,7 +43,7 @@ div {
 }
 
 .vacation {
-    width: 200px;
+    width: 170px;
     height: 20px;
     text-align: center;
     border: 1px solid black;
@@ -53,7 +55,7 @@ div {
 }
 
 .idle {
-    width: 200px;
+    width: 170px;
     height: 20px;
     text-align: center;
     border: 1px solid black;
@@ -65,7 +67,7 @@ div {
 }
 
 .weekend {
-    width: 200px;
+    width: 170px;
     height: 20px;
     text-align: center;
     border: 1px solid black;
