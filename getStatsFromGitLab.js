@@ -1,19 +1,20 @@
 let usersData = {
     names: ['vits', 'naba', 'ndm', 'anser', 'alymak', 'annko', 'rbod', 'voz', 'illia.khutornyi',
-    //'vladz'
+        //'vladz'
     ],
     vacationsDates: {
-        alymak: ["2017-12-29", "2018-01-02", "2018-01-03", "2018-01-29"],
-        annko: ["2017-12-29", "2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-25"],
-        rbod: ["2017-12-29", "2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-06", "2018-01-07", "2018-01-08", "2018-01-09"],
-        anser: ["2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-22", "2018-01-23", "2018-01-24"],
-        ndm: ["2018-01-02", "2018-01-03", "2018-01-09", "2018-01-10"],
-        vits: ["2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-06", "2018-01-07", "2018-01-08", "2018-01-09", "2018-01-10", "2018-01-11", "2018-01-12", "2018-01-22", "2018-01-23"],
-        vladz: ["2018-01-02", "2018-01-03", "2018-01-04", "2018-01-05", "2018-01-25"],
-        voz: ["2018-01-05", "2018-01-06", "2018-01-07", "2018-01-08", "2018-01-09", "2018-01-19", "2018-01-31"],
+        alymak: ["2017-12-29","2018-01-02","2018-01-03","2018-01-29"],
+        annko: ["2017-12-29","2018-01-02","2018-01-03","2018-01-04","2018-01-05","2018-01-25","2018-02-21","2018-02-22","2018-02-23"],
+        rbod: ["2017-12-29","2018-01-02","2018-01-03","2018-01-04","2018-01-05","2018-01-06","2018-01-07","2018-01-08","2018-01-09","2018-02-12"],
+        anser: ["2018-01-02","2018-01-03","2018-01-04","2018-01-05","2018-01-22","2018-01-23","2018-01-24","2018-02-12","2018-02-13","2018-02-14","2018-02-15","2018-02-16"],
+        ndm: ["2018-01-02","2018-01-03","2018-01-09","2018-01-10"],
+        vits: ["2018-01-02","2018-01-03","2018-01-04","2018-01-05","2018-01-06","2018-01-07","2018-01-08","2018-01-09","2018-01-10","2018-01-11","2018-01-12","2018-01-22","2018-01-23","2018-02-12"],
+//        vladz: ["2018-01-02","2018-01-03","2018-01-04","2018-01-05","2018-01-25"],
+        voz: ["2018-01-05","2018-01-06","2018-01-07","2018-01-08","2018-01-09","2018-01-19","2018-01-31"],
         naba: ["2018-01-17"],
-        'illia.khutornyi': ["2018-02-08", "2018-02-09"]
+        'illia.khutornyi': ["2018-02-08","2018-02-09","2018-02-23","2018-02-24","2018-02-25","2018-02-26","2018-02-27"],
     },
+    vacationsTillToday: [],
     absenseCoefficient: [],
     urls: [],
     jsons: [],
@@ -36,10 +37,22 @@ function checkIfVacation(user, date) {
     }
 }
 
+function calcVacationDaysTillToday() {
+    let usersInVacations = Object.keys(usersData.vacationsDates);
+    for (let i = 0; i < usersInVacations.length; i++) {
+        for (let j = 0; j < usersData.vacationsDates[usersInVacations[i]].length; j++) {
+            if (Date.parse(usersData.vacationsDates[usersInVacations[i]][j]) < Date.now()) {
+                if (!usersData.vacationsTillToday[i]) usersData.vacationsTillToday[i] = 0;
+                usersData.vacationsTillToday[i]++;
+            }
+        }
+    }
+}
+
 function calcAbsenseMultiplier() {
     let usersInVacations = Object.keys(usersData.vacationsDates);
     for (let i = 0; i < usersInVacations.length; i++) {
-        usersData.absenseCoefficient.push(1 + (usersData.vacationsDates[usersInVacations[i]].length / usersData.uniqueDates.length));
+        usersData.absenseCoefficient.push(1 + (usersData.vacationsTillToday[i] / usersData.uniqueDates.length));
     }
 }
 
@@ -121,7 +134,7 @@ function printTableStats() {
                     let nodeTd = document.createElement("TD");
                     //Highlight activity on weekdays
                     if (checkForWeekends(usersData.uniqueDates[i])) {
-                        document.getElementById(`row${i}`).setAttribute("class","hatching");
+                        document.getElementById(`row${i}`).setAttribute("class", "hatching");
                         nodeTd.style.backgroundColor = "#90EE90";
                     }
                     if (checkIfVacation(usersData.names[k], usersData.uniqueDates[i])) {
@@ -138,7 +151,7 @@ function printTableStats() {
                         nodeTd.style.backgroundColor = "#66CCCC";
                     }
                     else {
-                        if (!checkIfVacation(usersData.names[k], usersData.uniqueDates[i]) && !checkForWeekends(usersData.uniqueDates[i])){
+                        if (!checkIfVacation(usersData.names[k], usersData.uniqueDates[i]) && !checkForWeekends(usersData.uniqueDates[i])) {
                             nodeTd.style.backgroundColor = "#FF0000";
                         }
                     }
@@ -167,6 +180,7 @@ function getUserStats() {
         usersData.jsons = results;
         normalizeData();
         calculateTotals();
+        calcVacationDaysTillToday();
         calcAbsenseMultiplier();
         printTableStats();
     });
